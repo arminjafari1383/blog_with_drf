@@ -97,7 +97,7 @@ class PostSearchAPIView(APIView):
             similarity = TrigramSimilarity('description',query)
         ).filter(similarity__gt=0.1)
 
-        results = (results_title | results_desc).distinct().order_by('-smiliratiy')
+        results = (results_title | results_desc).distinct().order_by('-similarity')
         serializer = PostSerializer(results,many = True)
         return Response(serializer.data,status=200)
     
