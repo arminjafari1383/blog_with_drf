@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'title', 'slug', 'author', 'publish', 'status']
+        fields = ['id', 'title','description', 'slug', 'author', 'publish', 'status']
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
