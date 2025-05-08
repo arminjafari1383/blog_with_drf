@@ -1,12 +1,20 @@
 from rest_framework import serializers
-from .models import Post,Ticket,Comment,Image
+from .models import Post,Ticket,Comment,Image,Category
 from django.contrib.auth.models import User
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id','name']
 
 class PostSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only = True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset = Category.objects.all(),source='category',write_only = True
+    )
     class Meta:
         model = Post
-        fields = ['id', 'title','description', 'slug', 'author', 'publish', 'status']
+        fields = ['id', 'title','description', 'slug', 'author', 'publish', 'status','category','category_id']
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:

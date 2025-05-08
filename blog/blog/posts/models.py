@@ -11,6 +11,10 @@ from django.utils import timezone
 class PublishedManger(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+class Category(models.Model):
+    name = models.CharField(max_length=100,unique=True)
+    def __str__(self):
+        return self.name
     
 # Post model
 class Post(models.Model):
@@ -35,6 +39,7 @@ class Post(models.Model):
     # Choice fields
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
     reading_time = models.PositiveIntegerField(verbose_name="زمان مطالعه")
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='posts')
 
     # Managers
     objects = models.Manager()

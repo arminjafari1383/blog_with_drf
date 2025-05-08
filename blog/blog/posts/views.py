@@ -191,3 +191,7 @@ class RegisterAPIView(APIView):
             user = serializer.save()
             return Response(UserRegisterSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

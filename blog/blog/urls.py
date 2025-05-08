@@ -21,6 +21,7 @@ from drf_spectacular.views import SpectacularAPIView,SpectacularSwaggerView
 from blog.posts.views import *
 
 router = DefaultRouter()
+router.register(r'categories', CategoryViewSet)
 router.register(r"posts",PostViewSet,basename='post')
 
 
