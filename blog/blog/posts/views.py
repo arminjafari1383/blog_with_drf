@@ -10,20 +10,28 @@ from .models import *
 from .forms import *
 from django.contrib.postgres.search import TrigramSimilarity
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 
     
 class PostViewSet(viewsets.ViewSet):
+    queryset = Post.published.all()  # اضافه شود
+    lookup_field = 'pk'  # برای وضوح بیشتر
+
     @extend_schema(responses=PostSerializer(many=True))
     def list(self, request):
         posts = Post.published.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-    @extend_schema(responses=PostSerializer)
-    def retrieve(self,request,pk = None):
+
+    @extend_schema(
+        parameters=[OpenApiParameter(name='pk', type=int, location=OpenApiParameter.PATH)],
+        responses=PostSerializer
+    )
+    def retrieve(self, request, pk=None):
         try:
             post = Post.published.get(pk=pk)
         except Post.DoesNotExist:
-            return Response({"detail":"Not found."},status=404)
+            return Response({"detail": "Not found."}, status=404)
         
         serializer = PostSerializer(post)
         return Response(serializer.data)

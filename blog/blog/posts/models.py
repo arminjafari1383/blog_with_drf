@@ -11,12 +11,12 @@ from django.utils import timezone
 class PublishedManger(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+    
 class Category(models.Model):
     name = models.CharField(max_length=100,unique=True)
     def __str__(self):
         return self.name
     
-# Post model
 class Post(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
@@ -39,9 +39,10 @@ class Post(models.Model):
     # Choice fields
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
     reading_time = models.PositiveIntegerField(verbose_name="زمان مطالعه")
-    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='posts')
+    
+    # دسته‌بندی قابل خالی بودن
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
 
-    # Managers
     objects = models.Manager()
     published = PublishedManger()
 
@@ -60,7 +61,10 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
+            if not self.category:
+                default_category, created = Category.objects.get_or_create(name="عمومی")
+                self.category = default_category
+                super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         for img in self.images.all():

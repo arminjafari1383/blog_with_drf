@@ -22,7 +22,8 @@ from blog.posts.views import *
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
-router.register(r"posts",PostViewSet,basename='post')
+post_list = PostViewSet.as_view({'get': 'list'})
+post_detail = PostViewSet.as_view({'get': 'retrieve'})
 
 
 urlpatterns = [
@@ -39,4 +40,6 @@ urlpatterns = [
     path("api/register/", RegisterAPIView.as_view(), name="user-register-api"),
     path("api/schema/",SpectacularAPIView.as_view(),name = "schema"),
     path("api/schema/docs/",SpectacularSwaggerView.as_view(url_name="schema")),
+    path('posts/', post_list, name='post-list'),
+    path('posts/<int:pk>/', post_detail, name='post-detail'),  # حتماً <int:pk>
 ]
